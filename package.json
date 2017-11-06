@@ -1,6 +1,6 @@
 {
   "name": "@rh389/rn-apple-healthkit",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Customised fork of rn-apple-healthkit",
   "main": "index.js",
   "repository": {
