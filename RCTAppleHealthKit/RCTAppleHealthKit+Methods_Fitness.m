@@ -49,6 +49,45 @@
     }];
 }
 
+- (void)fitness_getStepCountBetweenDates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+
+    if(startDate == nil) {
+        callback(@[RCTMakeError(@"could not parse date from options.startDate", nil, nil)]);
+        return;
+    }
+
+    if(endDate == nil) {
+        callback(@[RCTMakeError(@"could not parse date from options.endDate", nil, nil)]);
+        return;
+    }
+
+    HKQuantityType *stepCountType = [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount];
+    HKUnit *stepsUnit = [HKUnit countUnit];
+
+    [self fetchSumOfSamplesBetweenDatesForType:stepCountType
+                                   unit:stepsUnit
+                              startDate:startDate
+                                endDate:endDate
+                             completion:^(double value, NSDate *startDate, NSDate *endDate, NSError *error) {
+        if (!value) {
+            NSLog(@"could not fetch step count between dates: %@", error);
+            callback(@[RCTMakeError(@"could not fetch step count between dates", error, nil)]);
+            return;
+        }
+
+         NSDictionary *response = @{
+                 @"value" : @(value),
+                 @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:startDate],
+                 @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:endDate],
+         };
+
+        callback(@[[NSNull null], response]);
+    }];
+}
+
 
 - (void)fitness_getDailyStepSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
