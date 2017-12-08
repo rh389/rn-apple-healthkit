@@ -33,7 +33,7 @@
                                    unit:stepsUnit
                                     day:date
                              completion:^(double value, NSDate *startDate, NSDate *endDate, NSError *error) {
-        if (!value) {
+        if (error != nil) {
             NSLog(@"could not fetch step count for day: %@", error);
             callback(@[RCTMakeError(@"could not fetch step count for day", error, nil)]);
             return;
@@ -72,7 +72,7 @@
                               startDate:startDate
                                 endDate:endDate
                              completion:^(double value, NSDate *startDate, NSDate *endDate, NSError *error) {
-        if (!value) {
+        if (error != nil) {
             NSLog(@"could not fetch step count between dates: %@", error);
             callback(@[RCTMakeError(@"could not fetch step count between dates", error, nil)]);
             return;
